@@ -14,6 +14,7 @@ export default function Test() {
   const [teste, setTeste] = useState([])
   const [data, setData] = useState([])
   const [dados, setDados] = useState([])
+  const [fabio, setFabio] = useState([])
   // const [products, setProducts] = useState();
 
   function handleUpload(e, file) {
@@ -40,7 +41,7 @@ export default function Test() {
 
       /* Update state */
       setData(dataArray)
-      console.log('fdp', dataArray)
+      // console.log('fdp', dataArray)
 
       if (knowType === 'csv') {
         verifyDataXlsx(dataArray)
@@ -54,81 +55,103 @@ export default function Test() {
     }
 
     if (rABS) {
-      const fabio = reader.readAsBinaryString(file)
-      console.log(fabio)
+      reader.readAsBinaryString(file)
     } else {
       reader.readAsArrayBuffer(file)
     }
   }
 
   function verifyDataXlsx(arr) {
-    const dadus = arr.map((item1) => (
-      item1.forEach(function (name, index) {
-        console.log(`${index + 1}, ${name}`)
-        const fabio = { teste: 'fabio' }
-        console.log(fabio)
-      })
-      // c_ibge: item1[0],
-      // c_cart: item1[1],
-      // d_geracao: item1[2],
-      // n_protocolo: item1[3],
-      // d_apresentacao: item1[4],
-      // c_especie: item1[5],
-      // n_especie: item1[6],
-      // n_titulo: item1[7],
-      // d_emissao: item1[8],
-      // d_vencimento: item1[9],
-      // endosso: item1[10],
-      // c_n_divida: item1[11],
-      // n_divida: item1[12],
-      // d_p_pagamento: item1[13],
-      // v_titulo: item1[14],
-      // s_t_protestar: item1[15],
-      // multa: item1[16],
-      // m_diaria: item1[17],
-      // c_distribuidor: item1[18],
-      // apontamento: item1[19],
-      // intimacao: item1[20],
-      // edital: item1[21],
-      // pagamento: item1[22],
-      // c_apontamento: item1[23],
-      // m_digitalizacao: item1[24],
-      // protesto: item1[25],
-      // c_protesto: item1[26],
-      // canc_protesto: item1[27],
-      // selos: item1[28],
-      // f_judiciario: item1[29],
-      // f_defensoria: item1[30],
-      // f_r_civil: item1[31],
-      // tributos: item1[32],
-      // t_bancaria: item1[33],
-      // t_apresentante: item1[34],
-      // apresentante: item1[35],
-      // c_atual: item1[36],
-      // c_original: item1[37],
-      // c_a_documento: item1[38],
-      // devedor: item1[39],
-      // endereco: item1[40],
-      // bairro: item1[41],
-      // cep: item1[42],
-      // d_devedor: item1[43],
-      // t_d_devedor: item1[44],
-      // n_numero: item1[45],
-      // f_falimentares: item1[46],
-      // t_i_f_falimentares: item1[47],
-      // d_a_cancelamento: item1[48],
-      // v_t_t_pagamento: item1[49],
-      // v_t_c_pagamento: item1[50],
-      // v_t_c_cancelamento: item1[51]
+    let result = [];
+    const keys = [
+    'c_ibge',
+    'c_cart',
+    'd_geracao',
+    'n_protocolo',
+    'd_apresentacao',
+    'c_especie',
+    'n_especie',
+    'n_titulo',
+    'd_emissao',
+    'd_vencimento',
+    'endosso',
+    'c_n_divida',
+    'n_divida',
+    'd_p_pagamento',
+    'v_titulo',
+    's_t_protestar',
+    'multa',
+    'm_diaria',
+    'c_distribuidor',
+    'apontamento',
+    'intimacao',
+    'edital',
+    'pagamento',
+    '_apontamento',
+    'm_digitalizacao',
+    'protesto',
+    'c_protesto',
+    'canc_protesto',
+    'selos',
+    'f_judiciario',
+    '_defensoria',
+    'f_r_civil',
+    'tributos',
+    't_bancaria',
+    '_apresentante',
+    'apresentante',
+    'c_atual',
+    'c_original',
+    'c_a_documento',
+    'devedor',
+    'endereco',
+    'bairro',
+    'cep',
+    'd_devedor',
+    't_d_devedor',
+    'n_numero',
+    'f_falimentares',
+    't_i_f_falimentares',
+    'd_a_cancelamento',
+    'v_t_t_pagamento',
+    'v_t_c_pagamento',
+    'v_t_c_cancelamento'
+]
 
+    // arr.forEach((listas) => {
+    //   const obj = {};
+    //   for (let i = 0; i < listas.length; i++){
+    //     obj[keys[i]] = listas[i];
+    //   }
+    //   result.push(obj)
+    // })
+    const excelDateToJSDate = function(excelDate) {
+      var date = new Date(Math.round((excelDate - (25567 + 2)) * 86400 * 1000));
+      var converted_date = date.toISOString().split('T')[0];
+      return converted_date.split('-').reverse().join('/')
+    }
+    
+    arr.forEach((listas) => {
+      const obj = {};
+      for (let i = 0; i < listas.length; i++){
+        if(i === 2){
+          listas[i] = excelDateToJSDate(listas[i]) 
+        }
 
+        obj[keys[i]] = listas[i];
+      }
+      result.push(obj)
+    })
+
+    console.log(result)
+   
+      // 
+    
       // })
-    ))
-
-    // console.log('testando...', dadus)
-    // dadus.shift()
-    setDados(dadus)
   }
+    // dadus.shift()
+  //   setDados(dadus)
+  // }
 
 
   function verifyData(arr) {
