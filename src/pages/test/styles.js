@@ -2,7 +2,8 @@ import styled from 'styled-components'
 
 export const Container = styled.div`
   /* border: 3px solid red; */
-  padding: 100px 50px;
+  /* padding: 100px 50px; */
+  padding-top: 60px;
 `
 
 export const Text = styled.p`
