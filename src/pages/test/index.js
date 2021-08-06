@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Container, Text, Button, Content, Input } from './styles'
 import XLSX from 'xlsx';
 import { CSVReader } from "react-papaparse"
-import { toast } from 'react-toastify';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+import { toast } from 'react-toastify';
 
 
 export default function Test() {
@@ -57,6 +57,7 @@ export default function Test() {
     
     else if (fileType === 'csv') {
       verifyData(data)
+
     }
     
     else {
@@ -69,8 +70,8 @@ export default function Test() {
     setCurrentKeys(arr[0].map(item => item))
 
     const keys = (arr[0].map(item => item))
-  
-
+    
+    
  
     // function excelDateToJSDate (excelDate) {
     //   const date = new Date(Math.round((excelDate - (25567 + 2)) * 86400 * 1000));
@@ -103,61 +104,55 @@ export default function Test() {
       result.push(obj)
     })
 
-    console.log(result)
-    setDados(result)
-  }
+    result.shift()
+    
+    result.map((item, i) => {
+      const fabio = Object.keys(item)
+      const allan = Object.values(item)
 
-  function handleRemove() {
-    setDados([])
-  }
+      // console.log(fabio, 'aaa')
+      allan.forEach((test, index) => {
+        const bobao = [test]
 
-  console.log(!!currentKeys)
-  
-  const columns = ['code', 'name', 'category', 'teste'];
-
-  const dynamicColumns = currentKeys ? currentKeys.map((col) => { return <Column key={col} field={col} header={col} />}) : console.log('quebrou')
-
-    // return <Column key={col} field={col} header={col} />;
-
-  // if (currentKeys) {
-        // const dynamicColumns = currentKeys.map((col) => {
-
-        //   return <Column key={col} field={col} header={col} />;
-        // }
-        // const dynamicColumns = currentKeys => console.log(currentKeys) 
-          // console.log('aaaa#', col)
-    //       return col
-        // );
-        // console.log('####', dynamicColumns)
+        // console.log(test)
+          // if (test.length === 0 ) {
+          //   console.log(`campo ${fabio[test]}, indice ${i+1}`)
+          //   console.log("################", fabio)
+          // }
+        bobao.forEach((vtf) => {
+          if (vtf.length === 0) {
+            console.log(vtf, i)
+          }
+        })
+        // console.log(bobao)
+        // test.map((test2) => {
+        //   console.log('@@@@@@@@', test2)
+        // })
+      // })
+      })
     
     
-  // }
-  // const fabio = (arr) => {
-  //   console.log(arr)
-  // //   const columns = [
-  // //     {field: 'code', header: 'Code'},
-  // //     {field: 'name', header: 'Name'},
-  // //     {field: 'category', header: 'Category'},
-  // //     {field: 'quantity', header: 'Quantity'}
-  // // ];
-  //   if (arr.length > 0 ) {
-      // console.log("fdp", currentKeys.length)
+    
+    // let davys = []
+    // console.log("##==>##", result)
+    //   // console.log(i)
+    //  if (item.cpf_cnpj.length === 0) {
+      //    davys.push(i+1)
+      //  }
       
-
-  //   }
-  //     //   // console.log(i, 'bbsadasdsadaa')
-  
-  //     //   return (
-  //     //     < DataTable value={dados} scrollable scrollHeight="50vh" >
-  //     //       
-  //     //     </DataTable>
-  //     //   )
-  // }
+      // toast.error(`Campo vazio linha(s) ${davys}`)
+      
+      setDados(result)
+    })
+  }
     
+    function handleRemove() {
+      setDados([])
+      setCurrentKeys('')
+    }
     
-  
+    const dynamicColumns = currentKeys ? currentKeys.map((col) => { return <Column style={{ width: '250px'}}key={col} field={col} header={col} />}) : console.log('')
 
-  
 
   return (
     <>
@@ -178,20 +173,15 @@ export default function Test() {
           </CSVReader>
         </Content>
       </Container>
+
       <div>
-        <div className="card">
-    
+        <div className="card"> 
+          {dados.length > 0 && (
+            <DataTable value={dados} scrollable scrollHeight="50vh" >
+              {dynamicColumns}
+            </DataTable>
 
-            
-          {/* {console.log(!!currentKeys)} */}
-          
-            {dados.length > 0 && (
-              <DataTable value={dados} scrollable scrollHeight="50vh" >
-                {dynamicColumns}
-              </DataTable>
-
-            )}
-        
+          )}      
         </div>
       </div>
     </>
