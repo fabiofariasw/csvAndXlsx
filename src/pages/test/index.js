@@ -23,6 +23,7 @@ export default function Test() {
       data.push(e[i].data)
     }
     data.pop()
+    // console.log('data =>', data)
 
     const knowType = file.name.split('.')
     const size = knowType.length
@@ -71,15 +72,15 @@ export default function Test() {
   
 
  
-    function excelDateToJSDate (excelDate) {
-      const date = new Date(Math.round((excelDate - (25567 + 2)) * 86400 * 1000));
-      const converted_date = date.toISOString().split('T')[0];
-      return converted_date.split('-').reverse().join('/')
-    }
+    // function excelDateToJSDate (excelDate) {
+    //   const date = new Date(Math.round((excelDate - (25567 + 2)) * 86400 * 1000));
+    //   const converted_date = date.toISOString().split('T')[0];
+    //   return converted_date.split('-').reverse().join('/')
+    // }
    
-    function convertUtf8(indexName) {
-      return decodeURIComponent(escape(indexName));
-    }
+    // function convertUtf8(indexName) {
+    //   return decodeURIComponent(escape(indexName));
+    // }
         
     arr.forEach((listas) => {
       const obj = {};
@@ -110,6 +111,27 @@ export default function Test() {
     setDados([])
   }
 
+  console.log(!!currentKeys)
+  
+  const columns = ['code', 'name', 'category', 'teste'];
+
+  const dynamicColumns = currentKeys ? currentKeys.map((col) => { return <Column key={col} field={col} header={col} />}) : console.log('quebrou')
+
+    // return <Column key={col} field={col} header={col} />;
+
+  // if (currentKeys) {
+        // const dynamicColumns = currentKeys.map((col) => {
+
+        //   return <Column key={col} field={col} header={col} />;
+        // }
+        // const dynamicColumns = currentKeys => console.log(currentKeys) 
+          // console.log('aaaa#', col)
+    //       return col
+        // );
+        // console.log('####', dynamicColumns)
+    
+    
+  // }
   // const fabio = (arr) => {
   //   console.log(arr)
   // //   const columns = [
@@ -119,13 +141,7 @@ export default function Test() {
   // //     {field: 'quantity', header: 'Quantity'}
   // // ];
   //   if (arr.length > 0 ) {
-      console.log("fdp", currentKeys.length)
-  //     const dynamicColumns = currentKeys.map(col => 
-  //       console.log('aaaa#', col)
-  // //       return col
-  //       // return <Column key={col} field={col} header={col} />;
-  //     );
-  //     console.log('####', dynamicColumns)
+      // console.log("fdp", currentKeys.length)
       
 
   //   }
@@ -167,13 +183,15 @@ export default function Test() {
     
 
             
-         
-          {currentKeys > 0 && (
-            
-            < DataTable value={dados} scrollable scrollHeight="50vh" >
-              {/* {dynamicColumns()} */}
-            </DataTable>
-          )}
+          {/* {console.log(!!currentKeys)} */}
+          
+            {dados.length > 0 && (
+              <DataTable value={dados} scrollable scrollHeight="50vh" >
+                {dynamicColumns}
+              </DataTable>
+
+            )}
+        
         </div>
       </div>
     </>
