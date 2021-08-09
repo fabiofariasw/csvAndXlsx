@@ -13,7 +13,7 @@ export default function Test() {
   const [dados, setDados] = useState([])
   const [currentKeys, setCurrentKeys] = useState()
   const [colunaDinamica, setColunaDinamica] = useState([])
- 
+  
 
   function handleUpload(e, file) {
 
@@ -57,7 +57,6 @@ export default function Test() {
     
     else if (fileType === 'csv') {
       verifyData(data)
-
     }
     
     else {
@@ -67,7 +66,8 @@ export default function Test() {
 
   function verifyData(arr, fileType) {
     let result = [];
-    setCurrentKeys(arr[0].map(item => item))
+    let array = []
+    // setCurrentKeys(arr[0].map(item => item))
 
     const keys = (arr[0].map(item => item))
     
@@ -105,45 +105,38 @@ export default function Test() {
     })
 
     result.shift()
-    
-    result.map((item, i) => {
-      const fabio = Object.keys(item)
-      const allan = Object.values(item)
 
-      // console.log(fabio, 'aaa')
-      allan.forEach((test, index) => {
-        const bobao = [test]
+    result.map((item, indiceLinhas) => {
+      const chaves = Object.keys(item)
+      const valores = Object.values(item)
 
-        // console.log(test)
-          // if (test.length === 0 ) {
-          //   console.log(`campo ${fabio[test]}, indice ${i+1}`)
-          //   console.log("################", fabio)
-          // }
-        bobao.forEach((vtf) => {
-          if (vtf.length === 0) {
-            console.log(vtf, i)
+      valores.forEach((atributo, columnCount) => {
+        const attArray = [atributo]
+        // const obj = {}
+        // const arr = []
+        attArray.forEach((campo) => {
+          if (campo.length === 0) {
+            console.log(`erro, linha ${indiceLinhas + 1 }, coluna ${columnCount + 1}`)
+            let row = indiceLinhas + 1;
+            array.push(row)
           }
         })
-        // console.log(bobao)
-        // test.map((test2) => {
-        //   console.log('@@@@@@@@', test2)
-        // })
-      // })
       })
-    
-    
-    
-    // let davys = []
-    // console.log("##==>##", result)
-    //   // console.log(i)
-    //  if (item.cpf_cnpj.length === 0) {
-      //    davys.push(i+1)
-      //  }
       
-      // toast.error(`Campo vazio linha(s) ${davys}`)
       
       setDados(result)
+      setCurrentKeys(chaves)
     })
+
+    const Errors = new Set(array)
+    const countErrors = Errors.size 
+    let newArray = []
+    for (let i = 1; i <= countErrors; i++) {
+      newArray.push([i])
+      // console.log(i)
+    }
+    // console.log(newArray)
+    
   }
     
     function handleRemove() {
