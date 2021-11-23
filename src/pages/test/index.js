@@ -6,17 +6,21 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { toast } from 'react-toastify';
 
+import { api } from '../../services/api';
+
 
 export default function Test() {
 
-  const [extradigital, setExtradigital] = useState("")
   const [dados, setDados] = useState([])
-  const [currentKeys, setCurrentKeys] = useState()
+  const [currentKeys, setCurrentKeys] = useState([]);
   const [colunaDinamica, setColunaDinamica] = useState([])
+  const [errors, SetErros] = useState([]);
+  const [upload, setUpload] = useState([]);
   
 
   function handleUpload(e, file) {
-
+    // console.log(file)
+    setUpload(file);
     const data = []
 
     for (let i = 0 ; i < e.length; i++) {
@@ -52,11 +56,15 @@ export default function Test() {
         reader.readAsBinaryString(file)
       } else {
         reader.readAsArrayBuffer(file)
-      }  
+      }
+      
+      return
     }
     
-    else if (fileType === 'csv') {
+    if (fileType === 'csv') {
       verifyData(data)
+      
+      return
     }
     
     else {
@@ -64,7 +72,23 @@ export default function Test() {
     }
   }
 
+  async function enviarCsv() {
+    console.log(upload)
+    let formData = new FormData();
+    formData.append('file', upload);
+    formData.append('author', 'fabio');
+
+    console.log(formData)
+
+    try {
+      await api.post('/cargas/insert', formData)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   function verifyData(arr, fileType) {
+    // console.log('teste', arr)
     let result = [];
     let array = []
     // setCurrentKeys(arr[0].map(item => item))
@@ -110,22 +134,61 @@ export default function Test() {
       const chaves = Object.keys(item)
       const valores = Object.values(item)
 
-      valores.forEach((atributo, columnCount) => {
-        const attArray = [atributo]
-        // const obj = {}
-        // const arr = []
-        attArray.forEach((campo) => {
-          if (campo.length === 0) {
-            console.log(`erro, linha ${indiceLinhas + 1 }, coluna ${columnCount + 1}`)
-            let row = indiceLinhas + 1;
-            array.push(row)
+      valores.forEach((celula, index) => {
+        
+        const conditional = index === 0 || index === 12 || index === 13 || index === 14 || index === 15 || index === 16 || index === 17 || index === 18 || index === 19 || index === 20 || index === 21;
+
+        if (conditional) {
+          if (celula.length === 0) {
+            // console.log(`Erro Campo Vazio, linha ${indiceLinhas + 1 }, coluna ${index + 1}`)
+            // let row = indiceLinhas + 1;
+            // array.push(row)
+          } 
+          
+          if (celula.length > 0 && (index === 0 || index === 20)) {            
+            let documentWithoutMask = removeMask(celula);
+            let onlyHasNumber = isNumber(documentWithoutMask);
+            let isDocumentValid = checkDocumentValid(documentWithoutMask);
+            // let isDocumentValid = documentWithoutMask.length === 11 || documentWithoutMask.length === 14;
+            if (!onlyHasNumber || !isDocumentValid) {
+              console.log(`ERRO na linha ${indiceLinhas + 1}, coluna ${index + 1}`);
+            }
           }
-        })
+
+          if (celula.length > 0 && index === 16) {
+            let colunaValor = removeMask(celula);
+            
+            if (isNumber(colunaValor) > 0) {
+              // console.log('valor valido')
+            } else {
+              // console.log('valor invalido')
+            }
+          }
+
+          if (index === 17 || index === 18 || index === 19) {
+            let colunaJuros = removeMask(celula);
+
+            if (isNumber(colunaJuros)) {
+              // console.log('juros ou multa valido')
+            } else {
+              // console.log('juros ou multa invalido')
+            }
+          }
+
+          if (index === 18) {
+            let colunaMulta = removeMask(celula);
+
+            if (isNumber(colunaMulta)) {
+              // console.log('multa valida')
+            } else {
+              // console.log('multa invalida')
+            }
+          }
+        }
       })
-      
-      
-      setDados(result)
-      setCurrentKeys(chaves)
+           
+      setDados(result);
+      setCurrentKeys(chaves);
     })
 
     const Errors = new Set(array)
@@ -133,19 +196,43 @@ export default function Test() {
     let newArray = []
     for (let i = 1; i <= countErrors; i++) {
       newArray.push([i])
-      // console.log(i)
     }
-    // console.log(newArray)
-    
+  }
+
+  function isNumber(value) {
+    const reg = new RegExp('^[0-9]*$');
+    if (reg.test(value) === true) {
+      return true;
+    }
+
+    return false;
+  }
+
+  function removeMask(value) {
+    return value.replace(/[,./%-]/g,'');
+  }
+
+  function checkDocumentValid(value) {
+    if (value.length === 11 || value.length === 14) {
+      return true;
+    }
+
+    return false;
   }
     
-    function handleRemove() {
-      setDados([])
-      setCurrentKeys('')
-    }
+  function handleRemove() {
+    setDados([]);
+    setCurrentKeys([]);
+  }
     
-    const dynamicColumns = currentKeys ? currentKeys.map((col) => { return <Column style={{ width: '250px'}}key={col} field={col} header={col} />}) : console.log('')
-
+  const dynamicColumns = currentKeys.map(col => (
+    <Column
+      style={{ width: '350px'}}
+      key={col}
+      field={col}
+      header={col} 
+    />
+  ));
 
   return (
     <>
@@ -161,19 +248,30 @@ export default function Test() {
           >
             <span>
               Clique ou solte aqui seu arquivo{" "}
-              {extradigital === "S" ? "xlsx" : ".xlsx / .csv"}
+              {".xlsx / .csv"}
             </span>
           </CSVReader>
         </Content>
+        <div>
+          <label>Erros:</label>
+          <p>Linha x Coluna y</p>
+        </div>
+        <button
+          style={{cursor: 'pointer'}}
+          type='submit'
+          onClick={enviarCsv}
+          disabled
+        >
+          Upload
+        </button>
       </Container>
 
       <div>
         <div className="card"> 
-          {dados.length > 0 && (
+          {dados.length > 0 && currentKeys && (
             <DataTable value={dados} scrollable scrollHeight="50vh" >
               {dynamicColumns}
             </DataTable>
-
           )}      
         </div>
       </div>
